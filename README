@@ -7,6 +7,8 @@ http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/FAQ
 http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail
 
 Contact Petter Reinholdtsen <pere@hungry.com> if you have comments or improvements.
+The code is available from
+https://github.com/petterreinholdtsen/exim4-smtorp
 
 Debconf settings for exim4-config (output from debconf-show exim4-config):
 
