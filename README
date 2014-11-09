@@ -14,7 +14,7 @@ Debconf settings for exim4-config (output from debconf-show exim4-config):
 * exim4/mailname: freedombox
 * exim4/dc_eximconfig_configtype: internet site; mail is sent and received directly using SMTP
 * exim4/dc_postmaster:
-* exim4/dc_other_hostnames: freedombox;foo.onion
+* exim4/dc_other_hostnames: freedombox;hidden-service-name.onion
 * exim4/dc_relay_domains:
   exim4/hide_mailname:
 * exim4/dc_localdelivery: Maildir format in home directory
