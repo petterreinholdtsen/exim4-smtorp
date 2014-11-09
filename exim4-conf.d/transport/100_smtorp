@@ -1,0 +1,13 @@
+remote_smtp_onion:
+        debug_print = "T: remote_smtp_onion for $local_part@$original_domain"
+        driver = smtp
+
+        # set helo_data to where we want to connect to,
+        # for the proxy program tor-smtp
+        helo_data = "$address_data $original_domain"
+
+        # wherever we configured our script at
+        port = 12668
+
+        # cannot use TLS otherwise it will EHLO again!!
+        hosts_avoid_tls = *

@@ -1,0 +1,12 @@
+service tor-smtp
+{
+        socket_type     = stream
+        protocol        = tcp
+        port            = 12668
+        bind            = 127.0.0.1
+        type            = UNLISTED
+        wait            = no
+        user            = debian-tor
+        server          = /usr/lib/exim4-smtorp/tor-smtp
+        server_args     = localhost 9050
+}

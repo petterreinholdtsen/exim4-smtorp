@@ -1,0 +1,29 @@
+# tor stuff first
+#
+# if we're submitting mail *from* a .tor/.onion address,
+# make sure any header lines that may give us away is
+# stripped out, and add a new, cryptic Message-ID.
+# In address_data we store the name we should HELO as.
+tor_to_any:
+        debug_print     = "R: manualroute from .onion to $local_part@$domain"
+        driver          = manualroute
+        domains         = ! +local_domains
+        condition       = ${if match {$sender_address_domain}{\N.*\.(onion|tor)$\N}}
+        address_data    = $sender_address_domain
+        transport       = remote_smtp_onion
+        self            = send
+        route_list      = * localhost
+        headers_remove  = Received:Message-ID:X-Mailer:User-Agent
+        headers_add     = Message-ID: <${lc:${sha1:$message_id}}@$sender_address_domain>
+
+# this catches the case where we're submitting mail
+# from a regular email address where we don't need to
+# rewrite any headers
+any_to_tor:
+        debug_print     = "R: manualroute for $local_part@$domain"
+        driver          = manualroute
+        domains         = ! +local_domains
+        transport       = remote_smtp_onion
+        self            = send
+        route_list      = *.onion localhost ; *.tor localhost
+        address_data    = $smtp_active_hostname
