@@ -1,6 +1,6 @@
-CFLAGS = -Wall
+CFLAGS += -Wextra -Wall
 
-all: tor-smtp strip
+all: tor-smtp # strip
 
 tor-smtp: atomicio.o tor-smtp.o
 

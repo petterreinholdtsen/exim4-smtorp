@@ -1,0 +1,5 @@
+/files
+/*.debhelper
+/*.debhelper.log
+/*.substvars
+/exim4-smtorp/

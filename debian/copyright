@@ -1,0 +1,14 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/FAQ
+
+Files: *
+Copyright: 2006 Johannes Berg
+License: BSD
+
+Files: tor-smtp/*
+Copyright: 2005 Anil Madhavapeddy, 1995,1999 Theo de Raadt, 2006 Johannes Berg, 2001 Eric Jackson
+License: BSD
+
+Files: debian/*
+Copyright: 2014 Petter Reinholdtsen
+License: BSD

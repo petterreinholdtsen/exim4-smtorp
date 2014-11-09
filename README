@@ -1,0 +1,9 @@
+Exim4 setup for SMTorP, SMTP over Tor
+=====================================
+
+Based on the recipies found on.
+
+http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/FAQ
+http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail
+
+Contact Petter Reinholdtsen <pere@hungry.com> if you have comments or improvements.
