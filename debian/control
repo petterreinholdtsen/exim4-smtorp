@@ -13,5 +13,5 @@ Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: exim4, tor, xinetd
 Description: exim4 setup for SMTorP
- Set up Exim to accept email via SMTP over Tor, and to send email to
- username@*.onion via Tor.
+ Set up Exim to accept email via SMTP over Tor (SMTorP), and to send
+ email to username@*.onion via Tor.
