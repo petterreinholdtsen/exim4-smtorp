@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Configure a machine without exim installed as a mail server receiving
+# email using SMTP via Tor.
+
+if dpkg -l exim4-config > /dev/null ; then
+    echo "******************************************************************"
+    echo "* Unable to set up SMTP over Tor, exim4-config already installed *"
+    echo "* Purge the package and try again, or                            *"
+    echo "* run "dpkg-reconfigure exim4-config" to configure manually.     *"
+    echo "******************************************************************"
+    exit 1
+fi
+
+torhsdir=$(awk '/^HiddenServiceDir (.*) *$/ { print $2 }' /etc/tor/torrc)
+if [ -e "$torhsdir/hostname" ] ; then
+   torhsname=$(cat "$torhsdir/hostname")
+else
+    echo "*******************************************************************"
+    echo "* Unable to set up SMTP over TOR.  There is no Tor hidden service *"
+    echo "* name in $torhsdir           *"
+    echo "*******************************************************************"
+    echo "Please add lines like this to /etc/tor/torrc:"
+    echo
+    echo "HiddenServiceDir /var/lib/tor/hidden_service/"
+    echo "HiddenServicePort 25 127.0.0.1:25"
+    exit 1
+fi
+
+cat <<EOF | debconf-set-selections
+exim4-config	exim4/dc_eximconfig_configtype	select	internet site; mail is sent and received directly using SMTP
+exim4-config	exim4/dc_local_interfaces	string	127.0.0.1 ; ::1
+exim4-config	exim4/dc_other_hostnames	string	$torhsname
+exim4-config	exim4/use_split_config	boolean	true
+EOF
+
+DEBIAN_FRONTEND=noninteractive apt-get install -y exim4
