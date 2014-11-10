@@ -6,24 +6,10 @@ Based on the recipies found on.
 http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/FAQ
 http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail
 
+There are also recipes for postfix 
+http://www.void.gr/kargig/blog/2014/05/10/smtp-over-hidden-services-with-postfix/
+and transport via ssh, http://log.or.cz/?p=332 .
+
 Contact Petter Reinholdtsen <pere@hungry.com> if you have comments or improvements.
 The code is available from
 https://github.com/petterreinholdtsen/exim4-smtorp
-
-Debconf settings for exim4-config (output from debconf-show exim4-config):
-
-  exim4/no_config: true
-* exim4/mailname: freedombox
-* exim4/dc_eximconfig_configtype: internet site; mail is sent and received directly using SMTP
-* exim4/dc_postmaster:
-* exim4/dc_other_hostnames: freedombox;hidden-service-name.onion
-* exim4/dc_relay_domains:
-  exim4/hide_mailname:
-* exim4/dc_localdelivery: Maildir format in home directory
-  exim4/dc_readhost:
-* exim4/dc_local_interfaces: 127.0.0.1 ; ::1
-* exim4/dc_relay_nets:
-  exim4/dc_smarthost:
-* exim4/dc_minimaldns: false
-* exim4/use_split_config: true
-  exim4/exim4-config-title:
