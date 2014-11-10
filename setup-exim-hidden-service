@@ -12,6 +12,7 @@ if dpkg -l exim4-config > /dev/null ; then
     exit 1
 fi
 
+DEBIAN_FRONTEND=noninteractive apt-get install -y tor
 torhsdir=$(awk '/^HiddenServiceDir (.*) *$/ { print $2 }' /etc/tor/torrc)
 if [ -e "$torhsdir/hostname" ] ; then
    torhsname=$(cat "$torhsdir/hostname")
@@ -24,6 +25,8 @@ else
     echo
     echo "HiddenServiceDir /var/lib/tor/hidden_service/"
     echo "HiddenServicePort 25 127.0.0.1:25"
+    mkdir /var/lib/tor/hidden_service
+    chown debian-tor:debian-tor /var/lib/tor/hidden_service
     exit 1
 fi
 
