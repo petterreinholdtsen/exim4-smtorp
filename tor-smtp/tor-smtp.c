@@ -55,9 +55,9 @@ int read_bytes_timeout(int fd, char *buf, int bytes, int timeout)
 	struct pollfd pollfd = { .fd = fd, .events = POLLIN };
 	struct timeval tv_start, tv_now;
 	int got = 0, tmp;
-	
+
 	gettimeofday(&tv_start, NULL);
-	
+
 	while (got < bytes && timeout >= 0) {
 		if (poll(&pollfd, 1, timeout*1000) <= 0)
 			DEBUG_RETURN("poll failed: %d (got %d)\n", errno, got);
@@ -81,7 +81,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 	struct addrinfo *res = NULL;
 	char socks_init[] = { 5, 1, 0 };
 	char buf[255+7]; /* must be less than 255+7+1 bytes long */
-	int remote_server_len = strlen(remote_server);
+	size_t remote_server_len = strlen(remote_server);
 
 	if (remote_server_len > sizeof(buf)-7/*5 leading bytes and port */)
 		return -1;
@@ -98,7 +98,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 		DEBUG_OUT("getaddrinfo\n");
 	if (!res)
 		DEBUG_OUT("getaddrinfo returned empty set\n");
-		
+
 	if (connect(fd, res->ai_addr, res->ai_addrlen))
 		DEBUG_OUT("failed to connect\n");
 
@@ -117,7 +117,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 	buf[4] = remote_server_len;
 	strcpy(buf+5, remote_server);
 	*(short*) (buf+5+remote_server_len) = htons(remote_port);
-	if (write(fd, buf, 5+remote_server_len+2) != 5+remote_server_len+2)
+	if ((size_t)write(fd, buf, 5+remote_server_len+2) != 5+remote_server_len+2)
 		goto out_close;
 	if (!read_bytes_timeout(fd, buf, 4, 120))
 		goto out_close;
@@ -150,9 +150,9 @@ int readline(int fd, char *buf, int buflen, int timeout)
 	struct timeval tv_start, tv_now;
 	int got = 0, tmp;
 	char *match;
-	
+
 	gettimeofday(&tv_start, NULL);
-	
+
 	while (got < buflen && timeout >= 0) {
 		if (poll(&pollfd, 1, timeout*1000) <= 0)
 			DEBUG_RETURN("poll failed: %d (got %d)\n", errno, got);
@@ -214,7 +214,7 @@ bidicopy(int nfd)
 			else if (n == 0) {
 				goto shutdown_rd;
 			} else {
-				if (atomicio(vwrite, lfd, buf, n) != n)
+				if (atomicio(vwrite, lfd, buf, n) != (size_t)n)
 					return;
 			}
 		}
@@ -232,7 +232,7 @@ bidicopy(int nfd)
 			else if (n == 0) {
 				goto shutdown_wr;
 			} else {
-				if (atomicio(vwrite, nfd, buf, n) != n)
+				if (atomicio(vwrite, nfd, buf, n) != (size_t)n)
 					return;
 			}
 		    }
@@ -266,10 +266,10 @@ int main(int argc, char **argv)
 		fprintf(stderr, "     (default localhost 9050)\n");
 		return 2;
 	}
-	
+
 	printf("220 Welcome\r\n");
 	fflush(stdout);
-	
+
  command:
 	if ((linelen = readline(0, buf, sizeof(buf), 30)) < 0) {
 		printf("421 connection timed out\r\n");
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
  	printf("500 invalid command\r\n");
  	fflush(stdout);
  	goto command;
- 	
+
  helo_continue:
  	tmp = strtok(buf+5, " ");
  	if (!tmp) {
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 		fflush(stdout);
 		return 0;
 	}
-	
+
 	linelen = readline(fd, buf2, sizeof(buf2), 120);
 	if (linelen < 0) {
 		printf("421 could not connect\r\n");
@@ -323,13 +323,13 @@ int main(int argc, char **argv)
 		fflush(stdout);
 		return 0;
 	}
-	
+
 	strncpy(buf+5, local_onion, sizeof(buf)-5);
 	linelen = strlen(buf);
 	*(buf+linelen) = '\r';
 	*(buf+linelen+1) = '\n';
 	write(fd, buf, linelen+2);
-	
+
 	close(2); /* get rid of stderr */
 	/* now "all" we have to do is do a bidirectional copy of fd and stdio */
 	bidicopy(fd);
