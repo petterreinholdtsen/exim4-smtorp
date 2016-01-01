@@ -81,7 +81,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 	struct addrinfo *res = NULL;
 	char socks_init[] = { 5, 1, 0 };
 	char buf[255+7]; /* must be less than 255+7+1 bytes long */
-	int remote_server_len = strlen(remote_server);
+	size_t remote_server_len = strlen(remote_server);
 
 	if (remote_server_len > sizeof(buf)-7/*5 leading bytes and port */)
 		return -1;
@@ -117,7 +117,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 	buf[4] = remote_server_len;
 	strcpy(buf+5, remote_server);
 	*(short*) (buf+5+remote_server_len) = htons(remote_port);
-	if (write(fd, buf, 5+remote_server_len+2) != 5+remote_server_len+2)
+	if ((size_t)write(fd, buf, 5+remote_server_len+2) != 5+remote_server_len+2)
 		goto out_close;
 	if (!read_bytes_timeout(fd, buf, 4, 120))
 		goto out_close;
@@ -214,7 +214,7 @@ bidicopy(int nfd)
 			else if (n == 0) {
 				goto shutdown_rd;
 			} else {
-				if (atomicio(vwrite, lfd, buf, n) != n)
+				if (atomicio(vwrite, lfd, buf, n) != (size_t)n)
 					return;
 			}
 		}
@@ -232,7 +232,7 @@ bidicopy(int nfd)
 			else if (n == 0) {
 				goto shutdown_wr;
 			} else {
-				if (atomicio(vwrite, nfd, buf, n) != n)
+				if (atomicio(vwrite, nfd, buf, n) != (size_t)n)
 					return;
 			}
 		    }
