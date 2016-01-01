@@ -55,9 +55,9 @@ int read_bytes_timeout(int fd, char *buf, int bytes, int timeout)
 	struct pollfd pollfd = { .fd = fd, .events = POLLIN };
 	struct timeval tv_start, tv_now;
 	int got = 0, tmp;
-	
+
 	gettimeofday(&tv_start, NULL);
-	
+
 	while (got < bytes && timeout >= 0) {
 		if (poll(&pollfd, 1, timeout*1000) <= 0)
 			DEBUG_RETURN("poll failed: %d (got %d)\n", errno, got);
@@ -98,7 +98,7 @@ int connect_via_tor(const char *tor_server, const char *tor_port,
 		DEBUG_OUT("getaddrinfo\n");
 	if (!res)
 		DEBUG_OUT("getaddrinfo returned empty set\n");
-		
+
 	if (connect(fd, res->ai_addr, res->ai_addrlen))
 		DEBUG_OUT("failed to connect\n");
 
@@ -150,9 +150,9 @@ int readline(int fd, char *buf, int buflen, int timeout)
 	struct timeval tv_start, tv_now;
 	int got = 0, tmp;
 	char *match;
-	
+
 	gettimeofday(&tv_start, NULL);
-	
+
 	while (got < buflen && timeout >= 0) {
 		if (poll(&pollfd, 1, timeout*1000) <= 0)
 			DEBUG_RETURN("poll failed: %d (got %d)\n", errno, got);
@@ -266,10 +266,10 @@ int main(int argc, char **argv)
 		fprintf(stderr, "     (default localhost 9050)\n");
 		return 2;
 	}
-	
+
 	printf("220 Welcome\r\n");
 	fflush(stdout);
-	
+
  command:
 	if ((linelen = readline(0, buf, sizeof(buf), 30)) < 0) {
 		printf("421 connection timed out\r\n");
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
  	printf("500 invalid command\r\n");
  	fflush(stdout);
  	goto command;
- 	
+
  helo_continue:
  	tmp = strtok(buf+5, " ");
  	if (!tmp) {
@@ -310,7 +310,7 @@ int main(int argc, char **argv)
 		fflush(stdout);
 		return 0;
 	}
-	
+
 	linelen = readline(fd, buf2, sizeof(buf2), 120);
 	if (linelen < 0) {
 		printf("421 could not connect\r\n");
@@ -323,13 +323,13 @@ int main(int argc, char **argv)
 		fflush(stdout);
 		return 0;
 	}
-	
+
 	strncpy(buf+5, local_onion, sizeof(buf)-5);
 	linelen = strlen(buf);
 	*(buf+linelen) = '\r';
 	*(buf+linelen+1) = '\n';
 	write(fd, buf, linelen+2);
-	
+
 	close(2); /* get rid of stderr */
 	/* now "all" we have to do is do a bidirectional copy of fd and stdio */
 	bidicopy(fd);
