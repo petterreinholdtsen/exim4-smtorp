@@ -42,6 +42,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
+#include <syslog.h>
 /* for BSD: htons is in there: */
 #include <arpa/inet.h>
 #include "atomicio.h"
@@ -266,7 +267,9 @@ int main(int argc, char **argv)
 		fprintf(stderr, "     (default localhost 9050)\n");
 		return 2;
 	}
-	
+
+	openlog("tor-smtp", LOG_PID, LOG_MAIL);
+
 	printf("220 Welcome\r\n");
 	fflush(stdout);
 	
@@ -308,6 +311,8 @@ int main(int argc, char **argv)
 	if (fd < 0) {
 		printf("421 could not connect\r\n");
 		fflush(stdout);
+		syslog(LOG_WARNING, "tor connection to %s failed",
+		       remote_server);
 		return 0;
 	}
 	
@@ -315,6 +320,7 @@ int main(int argc, char **argv)
 	if (linelen < 0) {
 		printf("421 could not connect\r\n");
 		fflush(stdout);
+		syslog(LOG_WARNING, "no welcome message from %s", remote_server);
 		return 0;
 	}
 	if (strncmp("220 ", buf2, 4)) {
