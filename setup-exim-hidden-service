@@ -12,22 +12,41 @@ if dpkg -l exim4-config > /dev/null ; then
     exit 1
 fi
 
+append_if_missing() {
+    file="$1"
+    string="$2"
+    if [ -f "$file" ] && grep -xq "$string" "$file" ; then
+        :
+    else
+        (
+            if [ -f "$file" ] ; then cat "$file" ; fi
+            echo "$string"
+        ) > "$file.new" && mv "$file.new" "$file"
+    fi
+}
+
 DEBIAN_FRONTEND=noninteractive apt-get install -y tor
 torhsdir=$(awk '/^HiddenServiceDir (.*) *$/ { print $2 }' /etc/tor/torrc)
 if [ -e "$torhsdir/hostname" ] ; then
    torhsname=$(cat "$torhsdir/hostname")
 else
     echo "*******************************************************************"
-    echo "* Unable to set up SMTP over TOR.  There is no Tor hidden service *"
-    echo "* name in $torhsdir           *"
+    echo "* Added Tor hidden service for SMTP (port 25)                     *"
     echo "*******************************************************************"
-    echo "Please add lines like this to /etc/tor/torrc:"
-    echo
-    echo "HiddenServiceDir /var/lib/tor/hidden_service/"
-    echo "HiddenServicePort 25 127.0.0.1:25"
-    mkdir /var/lib/tor/hidden_service
+    append_if_missing /etc/tor/torrc \
+	"HiddenServiceDir /var/lib/tor/hidden_service/"
+    append_if_missing /etc/tor/torrc \
+	"HiddenServicePort 25 127.0.0.1:25"
+    mkdir -p /var/lib/tor/hidden_service
     chown debian-tor:debian-tor /var/lib/tor/hidden_service
-    exit 1
+    chmod og-rwx /var/lib/tor/hidden_service
+    service tor restart
+    if [ -e "$torhsdir/hostname" ] ; then
+	torhsname=$(cat "$torhsdir/hostname")
+    else
+	echo "error: unable to set up Tor hidden service"
+	exit 1
+    fi
 fi
 
 cat <<EOF | debconf-set-selections
