@@ -25,7 +25,7 @@ append_if_missing() {
     fi
 }
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y tor
+DEBIAN_FRONTEND=noninteractive apt-get install -y tor xinetd
 torhsdir=$(awk '/^HiddenServiceDir (.*) *$/ { print $2 }' /etc/tor/torrc)
 if [ -e "$torhsdir/hostname" ] ; then
    torhsname=$(cat "$torhsdir/hostname")
