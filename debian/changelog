@@ -1,5 +1,5 @@
 exim4-smtorp (0.1) UNRELEASED; urgency=low
 
-  * Initial release. (Closes: #722093)
+  * Initial release. (Closes: #?)
 
  -- Petter Reinholdtsen <pere@debian.org>  Sun, 09 Nov 2014 23:10:45 +0100
