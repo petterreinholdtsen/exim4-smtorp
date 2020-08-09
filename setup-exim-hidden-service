@@ -3,15 +3,6 @@
 # Configure a machine without exim installed as a mail server receiving
 # email using SMTP via Tor.
 
-if dpkg -l exim4-config > /dev/null ; then
-    echo "******************************************************************"
-    echo "* Unable to set up SMTP over Tor, exim4-config already installed *"
-    echo "* Purge the package and try again, or                            *"
-    echo "* run "dpkg-reconfigure exim4-config" to configure manually.     *"
-    echo "******************************************************************"
-    exit 1
-fi
-
 append_if_missing() {
     file="$1"
     string="$2"
@@ -47,6 +38,16 @@ else
 	echo "error: unable to set up Tor hidden service"
 	exit 1
     fi
+fi
+
+if dpkg -l exim4-config > /dev/null ; then
+    echo "******************************************************************"
+    echo "* Unable to set up SMTP over Tor, exim4-config already installed *"
+    echo "* Purge the package and try again, or                            *"
+    echo "* run "dpkg-reconfigure exim4-config" to configure manually.     *"
+    echo "******************************************************************"
+    echo "* Enable '$torhsname' as mail domain.
+    exit 1
 fi
 
 cat <<EOF | debconf-set-selections
