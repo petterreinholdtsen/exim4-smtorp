@@ -2,9 +2,8 @@ Exim4 setup for SMTorP, SMTP over Tor
 =====================================
 
 Based on the recipies found on.
-
-http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/FAQ
-http://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail
+https://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/faq/
+https://johannes.sipsolutions.net/Projects/exim-tor-hidden-mail/
 
 There are also recipes for postfix 
 http://www.void.gr/kargig/blog/2014/05/10/smtp-over-hidden-services-with-postfix/
