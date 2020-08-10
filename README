@@ -9,6 +9,6 @@ There are also recipes for postfix
 http://www.void.gr/kargig/blog/2014/05/10/smtp-over-hidden-services-with-postfix/
 and transport via ssh, http://log.or.cz/?p=332 .
 
-Contact Petter Reinholdtsen <pere@hungry.com> if you have comments or improvements.
-The code is available from
+Contact Petter Reinholdtsen <pere@hungry.com> if you have comments or
+improvements.  The code is available from
 https://github.com/petterreinholdtsen/exim4-smtorp
