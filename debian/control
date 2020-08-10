@@ -11,7 +11,8 @@ Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/exim4-smtorp.git;a
 Package: exim4-smtorp
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Recommends: exim4, tor, xinetd
+Recommends: tor, xinetd
+Enhances: exim4
 Description: exim4 setup for SMTorP
  Set up Exim to accept email via SMTP over Tor (SMTorP), and to send
  email to username@*.onion via Tor.
